@@ -63,22 +63,6 @@ print("p = ",p)
 population_3 = Population(avg=10_000, std_dev=500)
 sample_3_1 = Sample(40,population=population_3)
 sample_3_2 = Sample(15,population=population_3)
-
-class Test :
-    find = {
-        'critical_values' : list,
-        'tail' : str,
-    }
-
-    def __init__(self, critical_values : list , tail : str)->str:
-        if (len(critical_values) > 0):
-            self.find['critical_values'] = critical_values
-            self.find['tail'] = tail
-
-            # Validate when you use it
-            if self.find['tail'] not in ['<', '>', '!=']:
-                raise ValueError("tail must be '<', '>', or '!='")
-        pass
     
 test = Test([9900,10200],'<')
 

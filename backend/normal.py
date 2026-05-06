@@ -177,13 +177,18 @@ class Sample :
         else :
             return False
         
-# Test class
 class Test :
-    t_student : bool
-    fisher : bool
-    normal : bool
-    chi_2 : bool
+    find = {
+        'critical_values' : list,
+        'tail' : str,
+    }
 
-    type_of_test : int
+    def __init__(self, critical_values : list , tail : str)->str:
+        if (len(critical_values) > 0):
+            self.find['critical_values'] = critical_values
+            self.find['tail'] = tail
 
-
+            # Validate when you use it
+            if self.find['tail'] not in ['<', '>', '!=']:
+                raise ValueError("tail must be '<', '>', or '!='")
+        pass
