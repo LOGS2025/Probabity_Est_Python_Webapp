@@ -60,7 +60,7 @@ print("p = ",p)
 # b) Si el tamaño muestral hubiera sido 15 en lugar de 40, ¿podría calcularse la
 # probabilidad pedida en el inciso a)?
 
-population_3 = Population(avg=10000, std_dev=500)
+population_3 = Population(avg=10_000, std_dev=500)
 sample_3_1 = Sample(40,population=population_3)
 sample_3_2 = Sample(15,population=population_3)
 
@@ -80,45 +80,47 @@ class Test :
                 raise ValueError("tail must be '<', '>', or '!='")
         pass
     
-test = Test([0.8],'<')
+test = Test([9900,10200],'<')
 
-def probability_switch( params : Test, *samples : Sample, population : Population = None ):
+def probability_switch( params : Test, *samples : Sample, population : Population = None )->float:
     sample_arr = []
-    distribution_pop : str
-    distribution_s : str
-    z = []
+    z = None
 
-    if( len(params.find['critical_values']) > 1 ):
-        if ( params.find['critical_values'][0] > params.find['critical_values'][1] ) :
-            z.append(params.find['critical_values'][0])
-            z.append(params.find['critical_values'][1])
-        else :
-            z.append(params.find['critical_values'][1])
-            z.append(params.find['critical_values'][0])
+    # Fill z array for critical values and order them in any case
+    if len(params.find['critical_values']) > 1:
+        # Always sort in descending order (largest to smallest)
+        z = sorted(params.find['critical_values'], reverse=True)
     else:
         z = params.find['critical_values']
 
+    # Fill our sample array with the input samples
     if ( samples ) :
         for sample in samples :
             sample_arr.append(sample)
-            distribution_s = sample.distribution if sample.distribution else print("No tiene dist la muestra")            
 
-    sample_size = len(sample_arr)
-    
-    if ( population and population.distribution ) :
-        distribution_pop = population.distribution
+    # FIX: Check distribution from sample or population
+    distribution = None
+    if sample_arr and hasattr(sample_arr[0], 'distribution'):
+        distribution = sample_arr[0].distribution
+    elif population and hasattr(population, 'distribution'):
+        distribution = population.distribution
 
     if ( distribution == 'normal' ) :
-        print("Dist is normal?")
-        print(sample_arr[0].distribution, sample_arr[0].size)
-        print(z)
-        if ( len(z) == 1 ) :
+        if (  len(z) == 1  ) :
             if ( params.find['tail'] == '<' ) :
                 z = standarize_z(z[0],sample_arr[0].avg,sample_arr[0].std_dev ,sample_arr[0].size)
                 return normal_cdf(z)
             if ( params.find['tail'] == '>' ) :
                 z = standarize_z(z[0],sample_arr[0].avg,sample_arr[0].std_dev ,sample_arr[0].size)
                 return 1 - normal_cdf(z)
+        else :
+            
+            # z_sup = (z[0] - sample_arr[0].avg)/(sample_arr[0].std_dev/sqrt(sample_arr[0].size))
+            z_sup = (z[0] - sample_arr[0].avg)/(sample_arr[0].std_dev/sqrt(sample_arr[0].size))
+            # z_inf = (z[1] - sample_arr[0].avg)/(sample_arr[0].std_dev/sqrt(sample_arr[0].size))
+            z_inf = (z[1] - sample_arr[0].avg)/(sample_arr[0].std_dev/sqrt(sample_arr[0].size))
+            return normal_cdf(z_sup) - normal_cdf(z_inf)
+    return 0
 
 p = probability_switch(test, sample_3_1, population=population_3)
 print(p)

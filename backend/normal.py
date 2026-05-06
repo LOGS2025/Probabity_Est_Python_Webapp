@@ -126,15 +126,17 @@ class Sample :
         self.samples_taken = samples_taken # NUMBER OF SAMPLES TAKEN
 
         if ( self.from_population ):
+                # GRAB THE SAME PARAMETERS FROM POPULATION
             if ( not self.avg and self.from_population ) :
                 self.avg = self.from_population.avg
+                # GRAB THE SAME PARAMETERS FROM POPULATION
             if ( not self.var or self.std_dev and self.from_population ) :
-                self.var = self.from_population.var/self.size
+                self.var = self.from_population.var
                 self.std_dev = sqrt(self.var)
 
-        if ( var ) : 
+        if ( var and not std_dev ) : 
             self.std_dev = sqrt(var)
-        if ( std_dev ) :
+        if ( std_dev and not var ) :
             self.var = std_dev**2
         
         # WE ASSUME THAT IF THERE IS AN INPUT ON POPULATION, WE DO SAMPLING
