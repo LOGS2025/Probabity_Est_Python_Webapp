@@ -9,9 +9,9 @@ const Estadistico = ({
 })=>{
   
   const inputs = {
-    muestra1: { media: useRef(null), varianza: useRef(null), tamano: useRef(null) },
-    muestra2: { media: useRef(null), varianza: useRef(null), tamano: useRef(null) },
-    poblacion: { media: useRef(null), varianza: useRef(null), tamano: useRef(null) }
+    muestra1: { media: useRef<HTMLInputElement>(null), varianza: useRef<HTMLInputElement>(null), tamano: useRef<HTMLInputElement>(null) },
+    muestra2: { media: useRef<HTMLInputElement>(null), varianza: useRef<HTMLInputElement>(null), tamano: useRef<HTMLInputElement>(null) },
+    poblacion: { media: useRef<HTMLInputElement>(null), varianza: useRef<HTMLInputElement>(null), tamano: useRef<HTMLInputElement>(null) }
   };
   
   const [ json_package, setJsonPackage ] = useState({});
@@ -28,7 +28,7 @@ const Estadistico = ({
       <>
         <button 
         onClick={() => {
-          const data = {};
+          const data: Record<string, Record<string, string>> = {};
           Object.entries(inputs).forEach(set => {
             const [set_key, set_value] = set;
             
@@ -133,7 +133,7 @@ const Estadistico = ({
 }
 
 export const Formulario = () => {
-    const test_type = useRef(String);
+    const test_type = useRef<HTMLSelectElement>(null);
     const [prob_type, set_prob_type] = useState(String);
     const [ test, setTest ] = useState(String)
     const sendData = async (data : any)=>{
